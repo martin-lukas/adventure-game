@@ -21,11 +21,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="thief-adventure-game" />
+        <module name="adventure-game" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="thief-adventure-game" target="8" />
+      <module name="adventure-game" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
