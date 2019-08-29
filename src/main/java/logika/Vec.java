@@ -16,6 +16,7 @@ public class Vec {
     private List<Vec> seznamVeci;
     private boolean isProhledana = false;
     private boolean ulozna;
+    private String imgUrl;
 
     /**
      * Konstruktor
@@ -29,6 +30,11 @@ public class Vec {
         this.prenositelna = prenositelna;
         this.ulozna = ulozna;
         this.seznamVeci = new ArrayList<Vec>();
+    }
+    
+    public Vec(String nazev, boolean prenositelna, boolean ulozna, String imgUrl) {
+        this(nazev, prenositelna, ulozna);
+        this.imgUrl = imgUrl;
     }
 
     /**
@@ -121,11 +127,15 @@ public class Vec {
      * @return výpis věcí ve věci
      */
     public String nazvyVeci() {
-        String nazvy = "věci ve věci:";
+        StringBuilder nazvy = new StringBuilder("věci ve věci:");
         for (Vec vec : seznamVeci) {
-            nazvy += " " + vec.getNazev();
+            nazvy.append(" ").append(vec.getNazev());
         }
-        return nazvy;
+        return nazvy.toString();
+    }
+    
+    public String getImgUrl() {
+        return imgUrl;
     }
 
     /**

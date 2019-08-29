@@ -55,11 +55,11 @@ public class HerniPlan implements SubjektZmenyProstoru {
         brana.setVychod(svoboda);
 
         Vec sousosi = new Vec("sousoší", false, true);
-        Vec vino = new Vec("víno", true, false);
+        Vec vino = new Vec("víno", true, false, "wine.jpg");
         Vec truhla = new Vec("truhla", false, true);
-        Vec chloroform = new Vec("chloroform", true, false);
-        Vec whisky = new Vec("whisky", true, false);
-        Vec svicen = new Vec("svícen", false, false);
+        Vec chloroform = new Vec("chloroform", true, false, "chloroform.jpg");
+        Vec whisky = new Vec("whisky", true, false, "whiskey.jpg");
+        Vec svicen = new Vec("svícen", false, false, "candleholder.jpg");
 
         kasna.vlozVec(sousosi);
         sousosi.vlozVec(vino);

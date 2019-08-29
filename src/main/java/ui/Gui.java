@@ -1,8 +1,6 @@
 package ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -10,7 +8,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -35,7 +32,6 @@ public class Gui {
 
     private Hra hra;
     private JFrame hlavniOknoFrame;
-    private JComboBox<String> prikazyComboBox;
     private JTextField vstPrikTextField;
     private JTextArea vystupTextArea;
     private PanelVychodu panelVychodu;
@@ -74,16 +70,13 @@ public class Gui {
         public void actionPerformed(ActionEvent event) {
             
             panelBatohu.aktualizuj(hra.getBatoh());
-            String prikaz = prikazyComboBox.getSelectedItem().toString();
-            String parametr = vstPrikTextField.getText();
-            String radek = prikaz + " " + parametr;
-            String text = hra.zpracujPrikaz(radek);
-            vystupTextArea.append("\n\n" + radek + "\n");
+            String prikaz = vstPrikTextField.getText();
+            String text = hra.zpracujPrikaz(prikaz);
+            vystupTextArea.append("\n\n" + prikaz + "\n");
             vystupTextArea.append("\n" + text + "\n");
             vstPrikTextField.setText("");
             vystupTextArea.setCaretPosition(
                 vystupTextArea.getDocument().getLength());
-            prikazyComboBox.requestFocus();
             if (hra.konecHry()) {
                 vstPrikTextField.setEditable(false);
             }
@@ -103,7 +96,7 @@ public class Gui {
         initToolBaru();
         init();
         vystupTextArea.setText(hra.vratUvitani());
-        prikazyComboBox.requestFocus();
+        vstPrikTextField.requestFocusInWindow();
     }
 
     /**
@@ -112,26 +105,22 @@ public class Gui {
     private void init() {
         hlavniOknoFrame = new JFrame("Adventura");
         hlavniOknoFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        hlavniOknoFrame.setSize(650, 480);
+        hlavniOknoFrame.setSize(800, 480);
         hlavniOknoFrame.setLocation(200, 200);
 
         JPanel dolniPanel = new JPanel();
-        JLabel zadejPrikazLabel = new JLabel("Zadej příkaz: ");
-        prikazyComboBox = new JComboBox<>(hra.getPrikazy());
-        prikazyComboBox.setSelectedItem(this);
-        vstPrikTextField = new JTextField(10);
+        vstPrikTextField = new JTextField(20);
         vstPrikTextField.addActionListener(new ZpracovaniPrikazu());
-        JLabel parametrLabel = new JLabel("Parametr: ");
+        JLabel prikazLabel = new JLabel("Příkaz: ");
 
-        dolniPanel.add(zadejPrikazLabel);
-        dolniPanel.add(prikazyComboBox);
-        dolniPanel.add(parametrLabel);
+        dolniPanel.add(prikazLabel);
         dolniPanel.add(vstPrikTextField);
         
 
         hlavniOknoFrame.add(dolniPanel, BorderLayout.SOUTH);
-        vystupTextArea = new JTextArea(20, 40);
+        vystupTextArea = new JTextArea(20, 70);
         vystupTextArea.setEditable(false);
+        vystupTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
         hlavniOknoFrame.add(new JScrollPane(vystupTextArea));
 
         panelSMapou = new PanelSMapou(hra.getHerniPlan());
@@ -146,10 +135,12 @@ public class Gui {
         hlavniOknoFrame.add(pravyPanel, BorderLayout.EAST);
 
         oknoProstoru = new OknoProstoru(hra.getHerniPlan());
-        oknoNapovedy = new OknoNapovedy("/napoveda.htm");
+        oknoNapovedy = new OknoNapovedy("/help.htm");
 
         hlavniOknoFrame.setJMenuBar(listaMenuBar);
         hlavniOknoFrame.add(listaToolBar, BorderLayout.NORTH);
+    
+        
         hlavniOknoFrame.pack();
     }
 
@@ -196,7 +187,7 @@ public class Gui {
         // vytvoření instance akce pomocí anonymní vnitřní třídy odvozené od AbstractAction
         novaHraAction = new AbstractAction(
                 "Nová hra",
-                new ImageIcon(getClass().getResource("/New16.gif"))) {
+                new ImageIcon(getClass().getResource("/newIcon.gif"))) {
 
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -204,14 +195,15 @@ public class Gui {
                 oknoProstoru.nastaveniHernihoPlanu(hra.getHerniPlan());
                 panelVychodu.nastaveniHernihoPlanu(hra.getHerniPlan());
                 vystupTextArea.setText(hra.vratUvitani());
-                prikazyComboBox.requestFocus();
+                vstPrikTextField.setEditable(true);
+                vstPrikTextField.requestFocusInWindow();
             }
         };
 
         // 	akce konec hry
         konecHryAction = new AbstractAction(
                 "Konec hry",
-                new ImageIcon(getClass().getResource("/Stop16.gif"))) {
+                new ImageIcon(getClass().getResource("/stopIcon.gif"))) {
 
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -239,8 +231,8 @@ public class Gui {
             public void actionPerformed(ActionEvent event) {
                 JOptionPane.showMessageDialog(null,
                         "<html><body><h2>Hra adventura<h2>"
-                        + "<p>Ukázka grafiky do hry pro kurz 4IT115.</p>"
-                        + "<p><i>Verze: březen 2007</i></p>"
+                        + "<p>Grafická verze hry pro kurz 4IT115.</p>"
+                        + "<p><i>Verze: srpen 2019 (opravy chyby, původně 2015)</i></p>"
                         + "</body></html>");
             }
         };
@@ -249,7 +241,7 @@ public class Gui {
         oProgramuAction.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_O);
         napovedaAction = new AbstractAction(
                 "Nápověda k aplikaci",
-                new ImageIcon(getClass().getResource("/Help16.gif"))) {
+                new ImageIcon(getClass().getResource("/helpIcon.gif"))) {
 
             @Override
             public void actionPerformed(ActionEvent event) {

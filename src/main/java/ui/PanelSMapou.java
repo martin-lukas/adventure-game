@@ -44,7 +44,7 @@ public class PanelSMapou extends JPanel implements ObserverZmenyProstoru {
      * Metoda inicializuje panel s mapou.
      */
     public void init() {
-        URL umisteniObrazku = this.getClass().getResource("/mapka.png");
+        URL umisteniObrazku = this.getClass().getResource("/map.png");
         if (umisteniObrazku == null) {
             JOptionPane.showMessageDialog(null,
                     "Soubor s obrázkem nebyl nalezen",

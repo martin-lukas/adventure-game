@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import logika.Batoh;
 import logika.HerniPlan;
 import logika.Hra;
+import logika.Vec;
 import util.ObserverZmenyBatohu;
 
 /**
@@ -50,12 +51,10 @@ public class PanelBatohu extends JPanel implements ObserverZmenyBatohu {
     @Override
     public void aktualizuj(Batoh aktualniVeci) {
         this.removeAll();
-        String veci = aktualniVeci.seznamVeci();
-        oddeleneVeci = veci.split("  ");
-
+        
         URL umisteniObrazku;
-        for (int i = 1; i < oddeleneVeci.length; i++) {
-            umisteniObrazku = this.getClass().getResource("/" + oddeleneVeci[i] + ".jpg");
+        for (Vec vec : aktualniVeci.getSeznamVeci()) {
+            umisteniObrazku = this.getClass().getResource("/" + vec.getImgUrl());
             
             if (umisteniObrazku == null) {
                 JOptionPane.showMessageDialog(null,

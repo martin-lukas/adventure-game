@@ -79,6 +79,10 @@ public class Batoh implements SubjektZmenyBatohu {
         }
         return null;
     }
+    
+    public Set<Vec> getSeznamVeci() {
+        return seznamVeci;
+    }
 
     /**
      * Metoda vypíše seznam věcí v inventáři.
