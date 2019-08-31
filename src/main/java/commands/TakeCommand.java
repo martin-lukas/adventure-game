@@ -21,7 +21,7 @@ public class TakeCommand implements ICommand {
         this.backpack = backpack;
         this.name = name;
     }
-
+    
     /**
      * Method executes the take command by taking the thing from the room and inserting it
      * into the backpack, if possible.
@@ -40,7 +40,11 @@ public class TakeCommand implements ICommand {
         if (currentRoom.containsThing(thingName)) {
             Thing foundThing = plan.getCurrentRoom().takeThing(thingName);
             if (foundThing == null) {
-                return "Tato věc není přenositelná.";
+                if (thingName.equals("svícen")) {
+                    return "Teď jej nemůžeš vzít. Kníže by se probudil.";
+                } else {
+                    return "Tato věc není přenositelná.";
+                }
             }
             // means we successfully took the thing
             

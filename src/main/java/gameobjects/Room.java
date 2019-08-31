@@ -153,10 +153,14 @@ public class Room {
      * @return long description of the room
      */
     public String longDescription() {
+        String characterName = "";
+        if (character != null) {
+            characterName = character.getName();
+        }
         return "Jsi v prostoru " + name + " - " + description + ".\n"
                 + listOfExits()
                 + listOfThings()
-                + "postavy: " + character.getName();
+                + "postavy: " + characterName;
     }
     
     /**

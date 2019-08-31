@@ -139,6 +139,7 @@ public class Gui {
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWindow.setSize(800, 480);
         mainWindow.setLocation(200, 200);
+        mainWindow.setResizable(false);
 
         JPanel dolniPanel = new JPanel();
         inputTextField = new JTextField(20);
@@ -189,7 +190,7 @@ public class Gui {
         JMenu viewMenu = new JMenu("Zobrazit");
         menuBar.add(viewMenu);
     
-        JMenu helpMenu = new JMenu("Napoveda");
+        JMenu helpMenu = new JMenu("Nápověda");
         helpMenu.setMnemonic(KeyEvent.VK_N);
         menuBar.add(helpMenu);
     
