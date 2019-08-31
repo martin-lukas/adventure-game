@@ -6,7 +6,6 @@ package util;
  * 
  * @author Martin Lukáš
  * @version 1.0
- * //TODO replace this class together with the other one with one observable observer interface
  */
 public interface BackpackChangeObservable {
     

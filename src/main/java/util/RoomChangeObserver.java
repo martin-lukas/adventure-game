@@ -3,7 +3,7 @@ package util;
 import gameobjects.Room;
 
 /**
- * Rozhraní observeru pro prostory.
+ * Interface for the room observers.
  * 
  * @author Martin Lukáš
  * @version 1.0
@@ -11,11 +11,9 @@ import gameobjects.Room;
 public interface RoomChangeObserver {
 
     /**
-     * Metoda, ve které proběhne aktualizace pozorovatele, je volána
-     * prostřednictvím metody upozorniPozorovatele z rozhraní
-     * SubjektZmenyProstoru
+     * Method updates the room observers states.
      *
-     * @param aktualniRoom - aktualni prostor
+     * @param currentRoom current room
      */
-    void update(Room aktualniRoom);
+    void update(Room currentRoom);
 }

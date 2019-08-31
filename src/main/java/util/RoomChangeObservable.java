@@ -1,31 +1,29 @@
 package util;
 
 /**
- * Rozhraní subjektu změny prostoru.
+ * Interface for observable object that propagates changes of {@code Room} object
+ * to its observers.
+ *
  * @author Martin
  */
 public interface RoomChangeObservable {
 
     /**
-     * Metoda slouží k zaregistrování pozorovatele, musí to být instance třídy,
-     * která implementuje rozhraní ObserverZmenyProstoru.
+     * Method registers oberserver for the observable {@code Room} object.
      *
-     * @param pozorovatel - registrovaný objekt
+     * @param observer room observer
      */
-    void registerObserver(RoomChangeObserver pozorovatel);
+    void registerObserver(RoomChangeObserver observer);
 
     /**
-     * Metoda slouží k zrušení registrace pozorovatele, musí to být instance
-     * třídy, která implementuje rozhraní ObserverZmenyProstoru.
+     * Method unregisters observer for the observable {@code Room} object.
      *
-     * @param pozorovatel - objekt, který již nechce být informován o změnách
+     * @param observer unregistered observer
      */
-    void unregisterObserver(RoomChangeObserver pozorovatel);
+    void unregisterObserver(RoomChangeObserver observer);
 
     /**
-     * Metoda, která se volá vždy, když dojde ke změně této instance. Upozorní
-     * všechny pozorovatele, že došlo ke změně tak, že zavolá jejich metodu
-     * aktualizuj.
+     * Method notifies all observers of the change of state of the room.
      */
     void notifyObservers();
 }
