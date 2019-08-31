@@ -40,7 +40,7 @@ public class HelpWindow {
                     JOptionPane.ERROR_MESSAGE);
         }
         helpDialog.setLocation(700, 200);
-        helpDialog.setSize(400, 600);
+        helpDialog.setSize(400, 500);
     }
 
     public void setVisible(boolean visibility) {
