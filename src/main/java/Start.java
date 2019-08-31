@@ -1,32 +1,24 @@
-import logika.Hra;
+import gamelogic.Game;
 import ui.Gui;
-import ui.TextoveRozhrani;
+import ui.TextInterface;
 
 /**
- * Třída Start slouží ke spouštění aplikace ...
+ * Entry class for launching the application.
  *
  * @author Martin Lukáš
  * @version 1.0
  */
 public class Start {
-
-    /**
-     * Metoda Start, main třída aplikace
-     *
-     * @param args - argumenty při spouštění
-     */
     public static void main(String[] args) {
         if (args.length == 0) {
-            Gui grafika = new Gui(new Hra());
-            grafika.setVisible(true);
+            Gui graphics = new Gui(new Game());
         } else {
             if (args[0].equals("-text")) {
-                TextoveRozhrani text = new TextoveRozhrani();
-                text.hraj();
+                TextInterface text = new TextInterface();
+                text.play();
             } else {
                 System.out.println("Neplatný parametr.");
             }
         }
-        
     }
 }

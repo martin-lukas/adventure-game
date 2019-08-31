@@ -20,255 +20,204 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import logika.Hra;
+
+import gamelogic.Game;
 
 /**
- * Třída pro vytvoření grafického rozhraní.
+ * Class for creating the entire graphical user interface.
  * 
  * @author Martin Lukáš
  * @version 1.0
  */
 public class Gui {
 
-    private Hra hra;
-    private JFrame hlavniOknoFrame;
-    private JTextField vstPrikTextField;
-    private JTextArea vystupTextArea;
-    private PanelVychodu panelVychodu;
-    private OknoProstoru oknoProstoru;
-    private JMenuBar listaMenuBar;
-    private JMenu souborMenu;
-    private JMenu zobrazitMenu;
-    private JMenu napovedaMenu;
-    private JMenuItem novaHraMenuItem;
-    private JMenuItem konecMenuItem;
-    private JMenuItem zobrPopisMenuItem;
-    private JMenuItem oProgramuMenuItem;
-    private JMenuItem napKApMenuItem;
-    private OknoNapovedy oknoNapovedy;
-    private PanelSMapou panelSMapou;
-    private PanelBatohu panelBatohu;
+    private Game game;
+    private JTextField inputTextField;
+    private JTextArea outputTextArea;
+    private ExitsPanel exitsPanel;
+    private RoomDescWindow roomDescWindow;
+    private JMenuBar menuBar;
+    private HelpWindow helpWindow;
+    private BackpackPanel backpackPanel;
+    private JToolBar toolBar;
     
-    private JToolBar listaToolBar;
-    Action novaHraAction,
-        konecHryAction,
-        zobrPopisuMistAction,
-        oProgramuAction,
-        napovedaAction;
-
-    /**
-     * Vnitřní trida pro zpracovani prikazu.
-     */
-    private class ZpracovaniPrikazu implements ActionListener {
-
-        /**
-         * Metoda zpracovává příkaz.
-         * 
-         * @param event 
-         */
+    private Action newGameAction;
+    private Action endGameAction;
+    private Action roomDescAction;
+    private Action aboutAction;
+    private Action helpAction;
+    
+    private class CommandListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent event) {
             
-            panelBatohu.aktualizuj(hra.getBatoh());
-            String prikaz = vstPrikTextField.getText();
-            String text = hra.zpracujPrikaz(prikaz);
-            vystupTextArea.append("\n\n" + prikaz + "\n");
-            vystupTextArea.append("\n" + text + "\n");
-            vstPrikTextField.setText("");
-            vystupTextArea.setCaretPosition(
-                vystupTextArea.getDocument().getLength());
-            if (hra.konecHry()) {
-                vstPrikTextField.setEditable(false);
+            backpackPanel.update(game.getBackpack());
+            String command = inputTextField.getText();
+            String output = game.handleCommand(command);
+            outputTextArea.append("\n\n" + command + "\n");
+            outputTextArea.append("\n" + output + "\n");
+            inputTextField.setText("");
+            outputTextArea.setCaretPosition(
+                outputTextArea.getDocument().getLength());
+            if (game.isFinished()) {
+                inputTextField.setEditable(false);
             }
         }
     }
 
-    /**
-     * Konstruktor, který propojí grafiku a logiku, inicializuje grafické
-     * komponenty.
-     *
-     * @param hra - logika hry
-     */
-    public Gui(Hra hra) {
-        this.hra = hra;
-        vytvorAkce();
-        initMenu();
-        initToolBaru();
-        init();
-        vystupTextArea.setText(hra.vratUvitani());
-        vstPrikTextField.requestFocusInWindow();
+    public Gui(Game game) {
+        this.game = game;
+        initActions();
+        initComponents();
+        outputTextArea.setText(game.welcomeMessage());
+        inputTextField.requestFocusInWindow();
     }
-
-    /**
-     * Metoda inicializuje a propojuje jednotlivé komponenty GUI.
-     */
-    private void init() {
-        hlavniOknoFrame = new JFrame("Adventura");
-        hlavniOknoFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        hlavniOknoFrame.setSize(800, 480);
-        hlavniOknoFrame.setLocation(200, 200);
-
-        JPanel dolniPanel = new JPanel();
-        vstPrikTextField = new JTextField(20);
-        vstPrikTextField.addActionListener(new ZpracovaniPrikazu());
-        JLabel prikazLabel = new JLabel("Příkaz: ");
-
-        dolniPanel.add(prikazLabel);
-        dolniPanel.add(vstPrikTextField);
-        
-
-        hlavniOknoFrame.add(dolniPanel, BorderLayout.SOUTH);
-        vystupTextArea = new JTextArea(20, 70);
-        vystupTextArea.setEditable(false);
-        vystupTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
-        hlavniOknoFrame.add(new JScrollPane(vystupTextArea));
-
-        panelSMapou = new PanelSMapou(hra.getHerniPlan());
-        hlavniOknoFrame.add(panelSMapou, BorderLayout.WEST);
-
-        JPanel pravyPanel = new JPanel(new GridLayout(2, 1));
-        panelVychodu = new PanelVychodu(hra.getHerniPlan());
-        panelBatohu = new PanelBatohu(hra);
-        panelBatohu.setBackground(Color.WHITE);
-        pravyPanel.add(panelVychodu);
-        pravyPanel.add(panelBatohu);
-        hlavniOknoFrame.add(pravyPanel, BorderLayout.EAST);
-
-        oknoProstoru = new OknoProstoru(hra.getHerniPlan());
-        oknoNapovedy = new OknoNapovedy("/help.htm");
-
-        hlavniOknoFrame.setJMenuBar(listaMenuBar);
-        hlavniOknoFrame.add(listaToolBar, BorderLayout.NORTH);
     
-        
-        hlavniOknoFrame.pack();
-    }
-
-    /**
-     * Metoda inicializuje menu aplikace.
-     */
-    private void initMenu() {
-        listaMenuBar = new JMenuBar();
-
-        souborMenu = new JMenu("Soubor");
-        souborMenu.setMnemonic(KeyEvent.VK_S);
-        listaMenuBar.add(souborMenu);
-
-        zobrazitMenu = new JMenu("Zobrazit");
-        listaMenuBar.add(zobrazitMenu);
-
-        napovedaMenu = new JMenu("Napoveda");
-        napovedaMenu.setMnemonic(KeyEvent.VK_N);
-        listaMenuBar.add(napovedaMenu);
-
-        novaHraMenuItem = new JMenuItem(novaHraAction);
-        souborMenu.add(novaHraMenuItem);
-
-        souborMenu.addSeparator();
-
-        konecMenuItem = new JMenuItem(konecHryAction);
-        souborMenu.add(konecMenuItem);
-
-        zobrPopisMenuItem = new JMenuItem(zobrPopisuMistAction);
-        zobrazitMenu.add(zobrPopisMenuItem);
-
-        oProgramuMenuItem = new JMenuItem(oProgramuAction);
-        napovedaMenu.add(oProgramuMenuItem);
-
-        napKApMenuItem = new JMenuItem(napovedaAction);
-        napovedaMenu.add(napKApMenuItem);
-    }
-
-    /**
-     * Metoda vytváří různé akce.
-     */
-    private void vytvorAkce() {
-        // akce pro novou hru
-        // vytvoření instance akce pomocí anonymní vnitřní třídy odvozené od AbstractAction
-        novaHraAction = new AbstractAction(
+    private void initActions() {
+        newGameAction = new AbstractAction(
                 "Nová hra",
                 new ImageIcon(getClass().getResource("/newIcon.gif"))) {
-
+            
             @Override
             public void actionPerformed(ActionEvent event) {
-                hra = new Hra();
-                oknoProstoru.nastaveniHernihoPlanu(hra.getHerniPlan());
-                panelVychodu.nastaveniHernihoPlanu(hra.getHerniPlan());
-                vystupTextArea.setText(hra.vratUvitani());
-                vstPrikTextField.setEditable(true);
-                vstPrikTextField.requestFocusInWindow();
+                game = new Game();
+                roomDescWindow.setGamePlan(game.getGamePlan());
+                exitsPanel.setGamePlan(game.getGamePlan());
+                outputTextArea.setText(game.welcomeMessage());
+                inputTextField.setEditable(true);
+                inputTextField.requestFocusInWindow();
             }
         };
-
-        // 	akce konec hry
-        konecHryAction = new AbstractAction(
+        
+        endGameAction = new AbstractAction(
                 "Konec hry",
                 new ImageIcon(getClass().getResource("/stopIcon.gif"))) {
-
+            
             @Override
             public void actionPerformed(ActionEvent event) {
                 System.exit(0);
             }
         };
-
-        // nastavení akcelerátoru - Alt + F4
-        konecHryAction.putValue(AbstractAction.ACCELERATOR_KEY,
+        endGameAction.putValue(AbstractAction.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
-
-        // akce zobrazeni popisu
-        zobrPopisuMistAction = new AbstractAction("Zobrazit popis místnosti") {
-
+        
+        roomDescAction = new AbstractAction("Zobrazit popis místnosti") {
+            
             @Override
             public void actionPerformed(ActionEvent event) {
-                oknoProstoru.setVisible(true);
-
+                roomDescWindow.setVisible(true);
+                
             }
         };
-
-        oProgramuAction = new AbstractAction("O programu") {
-
+        
+        aboutAction = new AbstractAction("O programu") {
+            
             @Override
             public void actionPerformed(ActionEvent event) {
                 JOptionPane.showMessageDialog(null,
                         "<html><body><h2>Hra adventura<h2>"
-                        + "<p>Grafická verze hry pro kurz 4IT115.</p>"
-                        + "<p><i>Verze: srpen 2019 (opravy chyby, původně 2015)</i></p>"
-                        + "</body></html>");
+                                + "<p>Grafická verze hry pro kurz 4IT115.</p>"
+                                + "<p><i>Verze: srpen 2019 (opravy chyby, původně 2015)</i></p>"
+                                + "</body></html>");
             }
         };
-
-        // nastavení mnemonické klávesy
-        oProgramuAction.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_O);
-        napovedaAction = new AbstractAction(
+        aboutAction.putValue(AbstractAction.MNEMONIC_KEY, KeyEvent.VK_O);
+        
+        helpAction = new AbstractAction(
                 "Nápověda k aplikaci",
                 new ImageIcon(getClass().getResource("/helpIcon.gif"))) {
-
+            
             @Override
             public void actionPerformed(ActionEvent event) {
-                oknoNapovedy.setVisible(true);
+                helpWindow.setVisible(true);
             }
         };
     }
     
-    /**
-     * Metoda inicializuje toolbar aplikace.
-     */
-    private void initToolBaru() {
-        listaToolBar = new JToolBar("Nastrojova lista", JToolBar.HORIZONTAL);
-        listaToolBar.setRollover(true);
-        listaToolBar.add(novaHraAction);
-        listaToolBar.add(konecHryAction);
-        listaToolBar.add(zobrPopisuMistAction);
-        listaToolBar.add(oProgramuAction);
-        listaToolBar.add(napovedaAction);
-    }
+    private void initComponents() {
+        JFrame mainWindow = new JFrame("Adventura");
+        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainWindow.setSize(800, 480);
+        mainWindow.setLocation(200, 200);
+
+        JPanel dolniPanel = new JPanel();
+        inputTextField = new JTextField(20);
+        inputTextField.addActionListener(new CommandListener());
+        JLabel prikazLabel = new JLabel("Příkaz: ");
+
+        dolniPanel.add(prikazLabel);
+        dolniPanel.add(inputTextField);
+        
+
+        mainWindow.add(dolniPanel, BorderLayout.SOUTH);
+        outputTextArea = new JTextArea(20, 70);
+        outputTextArea.setEditable(false);
+        outputTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+        mainWindow.add(new JScrollPane(outputTextArea));
     
-    /**
-     * Metoda, která zviditelňuje GUI
-     *
-     * @param viditelnost GUI
-     */
-    public void setVisible(boolean viditelnost) {
-        hlavniOknoFrame.setVisible(viditelnost);
+        MapPanel mapPanel = new MapPanel(game.getGamePlan());
+        mainWindow.add(mapPanel, BorderLayout.WEST);
+
+        JPanel pravyPanel = new JPanel(new GridLayout(2, 1));
+        exitsPanel = new ExitsPanel(game.getGamePlan());
+        backpackPanel = new BackpackPanel(game);
+        backpackPanel.setBackground(Color.WHITE);
+        pravyPanel.add(exitsPanel);
+        pravyPanel.add(backpackPanel);
+        mainWindow.add(pravyPanel, BorderLayout.EAST);
+
+        roomDescWindow = new RoomDescWindow(game.getGamePlan());
+        helpWindow = new HelpWindow("/help.htm");
+
+        initMenu();
+        mainWindow.setJMenuBar(menuBar);
+        
+        initToolBar();
+        mainWindow.add(toolBar, BorderLayout.NORTH);
+        
+        mainWindow.pack();
+        mainWindow.setVisible(true);
+    }
+
+    private void initMenu() {
+        menuBar = new JMenuBar();
+    
+        JMenu fileMenu = new JMenu("Soubor");
+        fileMenu.setMnemonic(KeyEvent.VK_S);
+        menuBar.add(fileMenu);
+    
+        JMenu viewMenu = new JMenu("Zobrazit");
+        menuBar.add(viewMenu);
+    
+        JMenu helpMenu = new JMenu("Napoveda");
+        helpMenu.setMnemonic(KeyEvent.VK_N);
+        menuBar.add(helpMenu);
+    
+        JMenuItem newGameMenuItem = new JMenuItem(newGameAction);
+        fileMenu.add(newGameMenuItem);
+
+        fileMenu.addSeparator();
+    
+        JMenuItem endMenuItem = new JMenuItem(endGameAction);
+        fileMenu.add(endMenuItem);
+    
+        JMenuItem roomDescMenuItem = new JMenuItem(roomDescAction);
+        viewMenu.add(roomDescMenuItem);
+    
+        JMenuItem aboutMenuItem = new JMenuItem(aboutAction);
+        helpMenu.add(aboutMenuItem);
+    
+        JMenuItem helpMenuItem = new JMenuItem(helpAction);
+        helpMenu.add(helpMenuItem);
+    }
+
+    private void initToolBar() {
+        toolBar = new JToolBar("Nastrojova lista", JToolBar.HORIZONTAL);
+        toolBar.setRollover(true);
+        toolBar.add(newGameAction);
+        toolBar.add(endGameAction);
+        toolBar.add(roomDescAction);
+        toolBar.add(aboutAction);
+        toolBar.add(helpAction);
     }
 }

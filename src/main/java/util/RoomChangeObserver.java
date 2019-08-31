@@ -1,21 +1,21 @@
 package util;
 
-import logika.Batoh;
+import gameobjects.Room;
 
 /**
- * Rozhraní observeru pro batoh.
+ * Rozhraní observeru pro prostory.
  * 
  * @author Martin Lukáš
  * @version 1.0
  */
-public interface ObserverZmenyBatohu {
-    
+public interface RoomChangeObserver {
+
     /**
      * Metoda, ve které proběhne aktualizace pozorovatele, je volána
      * prostřednictvím metody upozorniPozorovatele z rozhraní
-     * SubjektZmenyBatohu
+     * SubjektZmenyProstoru
      *
-     * @param aktualniVeci aktualni veci v batohu
+     * @param aktualniRoom - aktualni prostor
      */
-    public void aktualizuj(Batoh aktualniVeci);
+    void update(Room aktualniRoom);
 }
