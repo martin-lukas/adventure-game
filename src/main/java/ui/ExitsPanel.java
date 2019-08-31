@@ -22,11 +22,11 @@ public class ExitsPanel extends JPanel implements RoomChangeObserver {
         super();
         this.plan = plan;
         plan.registerObserver(this);
-        init();
+        initComponents();
         this.update(plan.getCurrentRoom());
     }
 
-    private void init() {
+    private void initComponents() {
         exitsTextArea = new JTextArea(10, 10);
         exitsTextArea.setEditable(false);
         exitsTextArea.setBorder(BorderFactory.createTitledBorder("Východy:"));

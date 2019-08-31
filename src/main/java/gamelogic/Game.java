@@ -48,9 +48,9 @@ public class Game {
         if (command != null) {
             outputText = command.execute(Arrays.copyOfRange(words, 1, words.length));
             // Find out if the game was won
-            if (gamePlan.getCurrentRoom() == gamePlan.getEndRoom()) {
+            if (gamePlan.getCurrentRoom().equals(gamePlan.getEndRoom())) {
                 isFinished = true;
-                outputText += "\n";
+                outputText += "\n" + END_MESSAGE;
             }
         } else {
             outputText = "Nevím co tím myslíš? Tento příkaz neznám.";

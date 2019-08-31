@@ -61,6 +61,7 @@ public class Gui {
                 outputTextArea.getDocument().getLength());
             if (game.isFinished()) {
                 inputTextField.setEditable(false);
+                outputTextArea.requestFocusInWindow();
             }
         }
     }
@@ -83,6 +84,7 @@ public class Gui {
                 game = new Game();
                 roomDescWindow.setGamePlan(game.getGamePlan());
                 exitsPanel.setGamePlan(game.getGamePlan());
+                backpackPanel.setGame(game);
                 outputTextArea.setText(game.welcomeMessage());
                 inputTextField.setEditable(true);
                 inputTextField.requestFocusInWindow();
@@ -220,5 +222,9 @@ public class Gui {
         toolBar.add(roomDescAction);
         toolBar.add(aboutAction);
         toolBar.add(helpAction);
+    }
+    
+    public JTextField getInputTextField() {
+        return inputTextField;
     }
 }
